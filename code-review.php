@@ -13,13 +13,11 @@ class Check
 
 class CheckRepository
 {
-
     public function create(Check &$check)
     {
         // insert query
         $check->id = rand(10, 1000);
     }
-
 }
 
 class Product
@@ -32,7 +30,6 @@ class Product
         $this->productId = $productId;
         $this->priceNetto = $priceNetto;
     }
-
 }
 
 class ProductRepository
@@ -50,7 +47,7 @@ class CheckHandler
     private CheckRepository $checkRepository;
     private ProductRepository $productRepository;
     private array $params;
-    private Check $check;
+    public Check $check;
 
     const DEFAULT_VAT = 19;
     const UKRAINE_VAT = 21.5;
@@ -103,24 +100,19 @@ class CheckHandler
         return $this;
     }
 
-    public function getCheck(): Check
-    {
-        return $this->check;
-    }
-
 }
 
-$checkHandler = new CheckHandler(new CheckRepository(), new ProductRepository());
-$check = $checkHandler->setParams([
-    'country' => 'UA',
-    'productIds' => [1, 3, 4, 5],
-    'productQuantities' => [
-        1 => 3,
-        3 => 2,
-        4 => 1,
-        5 => 1
-    ],
-])->handle()->getCheck();
+$checkHandler = (new CheckHandler(new CheckRepository(), new ProductRepository()))
+    ->setParams([
+        'country' => 'UA',
+        'productIds' => [1, 3, 4, 5],
+        'productQuantities' => [
+            1 => 3,
+            3 => 2,
+            4 => 1,
+            5 => 1
+        ],
+    ])->handle();
 
-var_dump( $check );
+var_dump( $checkHandler->check );
 
